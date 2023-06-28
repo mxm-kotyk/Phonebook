@@ -7,6 +7,8 @@ import {
   StyledForm,
 } from 'components/ContactForm/ContactForm.styled';
 import { useFormik } from 'formik';
+import { useRegisterUserMutation } from 'redux/authApi';
+import { registerUser } from 'service/connectionsApi';
 import uniqid from 'uniqid';
 import * as yup from 'yup';
 
@@ -28,7 +30,7 @@ const validationSchema = yup.object({
     .required('Password is required'),
 });
 
-function RegisterPage() {
+const RegisterPage = () => {
   const formik = useFormik({
     initialValues: { name: '', email: '', password: '' },
     onSubmit: ({ name, email, password }) =>
@@ -36,14 +38,19 @@ function RegisterPage() {
     validationSchema,
   });
 
-  const handleSubmit = (name, email, password) => {
-    formik.resetForm();
-    console.table({ name, email, password });
-  };
+  const [registerUser, { isLoading, error, data }] = useRegisterUserMutation();
 
   const nameInputId = uniqid();
   const emailInputId = uniqid();
   const passwordInputId = uniqid();
+
+  const handleSubmit = async (name, email, password) => {
+    formik.resetForm();
+    console.log({ name, email, password });
+
+    await registerUser({ name, email, password }).unwrap();
+    console.log(error);
+  };
 
   return (
     <>
@@ -104,6 +111,6 @@ function RegisterPage() {
       </StyledForm>
     </>
   );
-}
+};
 
 export default RegisterPage;
