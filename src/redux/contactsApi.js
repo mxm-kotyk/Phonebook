@@ -10,6 +10,9 @@ export const contactsApi = createApi({
     getAllContacts: builder.query({
       query: () => '/contacts',
       providesTags: ['Contact'],
+      transformResponse: response => {
+        return response.sort((a, b) => a.name.localeCompare(b.name));
+      },
     }),
     addContact: builder.mutation({
       query(contactData) {
