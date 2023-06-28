@@ -36,12 +36,11 @@ const LogInPage = () => {
 
   const handleSubmit = async (email, password) => {
     formik.resetForm();
-    // try {
-    await logInUser({ email, password }).unwrap();
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    if (error) console.log(error);
+    try {
+      await logInUser({ email, password }).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

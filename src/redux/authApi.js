@@ -1,13 +1,14 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
+import { setToken } from 'helpers/axios';
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: '' }) =>
   async ({ url, method, data, params }) => {
     try {
       const result = await axios({ url: baseUrl + url, method, data, params });
-      axios.defaults.headers.common.Authorization = `Bearer ${result.data.token}`;
-      console.log(result.data.token);
+      setToken(result.data.token);
+      console.log(result.data);
       return { data: result.data };
     } catch (axiosError) {
       let err = axiosError;
@@ -27,6 +28,10 @@ export const authApi = createApi({
   }),
   tagTypes: ['Auth'],
   endpoints: builder => ({
+    getUser: builder.query({
+      query: () => '/users/current',
+      providesTags: ['Auth'],
+    }),
     registerUser: builder.mutation({
       query(userData) {
         return {
@@ -45,22 +50,17 @@ export const authApi = createApi({
           data: userData,
         };
       },
-      transformResponse: response => ({ ...response, isLoggedIn: true }),
+      // transformResponse: response => ({ ...response, isLoggedIn: true }),
       providesTags: ['Auth'],
-      // async onCacheEntryAdded(
-      //   arg,
-      //   {
-      //     dispatch,
-      //     getState,
-      //     extra,
-      //     requestId,
-      //     cacheEntryRemoved,
-      //     cacheDataLoaded,
-      //     getCacheEntry,
-      //   }
-      // ) {
-      //   console.log(cacheDataLoaded());
-      // },
+    }),
+    logOutUser: builder.mutation({
+      query() {
+        return {
+          url: '/users/logout',
+          method: 'POST',
+        };
+      },
+      providesTags: ['Auth'],
     }),
   }),
 });
@@ -85,4 +85,9 @@ export const authApi = createApi({
 //   }),
 // });
 
-export const { useRegisterUserMutation, useLogInUserMutation } = authApi;
+export const {
+  useRegisterUserMutation,
+  useLogInUserMutation,
+  useGetUserQuery,
+  useLogOutUserMutation,
+} = authApi;
