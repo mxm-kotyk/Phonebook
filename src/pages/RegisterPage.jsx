@@ -8,7 +8,6 @@ import {
 } from 'components/ContactForm/ContactForm.styled';
 import { useFormik } from 'formik';
 import { useRegisterUserMutation } from 'redux/authApi';
-import { registerUser } from 'service/connectionsApi';
 import uniqid from 'uniqid';
 import * as yup from 'yup';
 
@@ -38,7 +37,7 @@ const RegisterPage = () => {
     validationSchema,
   });
 
-  const [registerUser, { isLoading, error, data }] = useRegisterUserMutation();
+  const [registerUser, { error }] = useRegisterUserMutation();
 
   const nameInputId = uniqid();
   const emailInputId = uniqid();

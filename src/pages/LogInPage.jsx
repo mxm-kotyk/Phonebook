@@ -29,7 +29,7 @@ const LogInPage = () => {
     validationSchema,
   });
 
-  const [logInUser, { isLoading, error }] = useLogInUserMutation();
+  const [logInUser, { error }] = useLogInUserMutation();
 
   const emailInputId = uniqid();
   const passwordInputId = uniqid();
