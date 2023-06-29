@@ -1,4 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 import { setToken } from 'helpers/axios';
 
@@ -69,6 +69,9 @@ export const authApi = createApi({
 //   reducerPath: 'authApi',
 //   baseQuery: fetchBaseQuery({
 //     baseUrl: 'https://connections-api.herokuapp.com/',
+//     // prepareHeaders: (headers, { getState }) => {
+//     //   const token = getState()
+//     // }
 //   }),
 //   tagTypes: ['Auth'],
 //   endpoints: builder => ({

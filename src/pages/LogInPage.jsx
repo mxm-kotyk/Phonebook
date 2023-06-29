@@ -7,7 +7,9 @@ import {
   StyledForm,
 } from 'components/ContactForm/ContactForm.styled';
 import { useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
 import { useLogInUserMutation } from 'redux/authApi';
+import { setToken } from 'redux/tokenSlice';
 import uniqid from 'uniqid';
 import * as yup from 'yup';
 
@@ -29,6 +31,7 @@ const LogInPage = () => {
     validationSchema,
   });
 
+  const dispatch = useDispatch();
   const [logInUser, { error }] = useLogInUserMutation();
 
   const emailInputId = uniqid();
@@ -37,7 +40,9 @@ const LogInPage = () => {
   const handleSubmit = async (email, password) => {
     formik.resetForm();
     try {
-      await logInUser({ email, password }).unwrap();
+      const user = await logInUser({ email, password }).unwrap();
+      console.log(user.token);
+      dispatch(setToken(user.token));
     } catch (error) {
       console.log(error);
     }

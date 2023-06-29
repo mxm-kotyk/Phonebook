@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
-import { useGetUserQuery } from 'redux/authApi';
+import { useSelector } from 'react-redux';
+import { authApi, useGetUserQuery } from 'redux/authApi';
+import { selectToken } from 'redux/selectors';
 
 export const UserMenu = () => {
-  const { data } = useGetUserQuery();
+  const token = useSelector(selectToken);
+  const { data } = useGetUserQuery({ skip: !token });
   console.log(data);
-  // useEffect(() => {
 
-  // })
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <p>Email goes here</p>
       <button type="button">LogOut</button>
     </div>
