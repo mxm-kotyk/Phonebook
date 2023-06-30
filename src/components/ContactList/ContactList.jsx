@@ -1,7 +1,7 @@
 import { Contact } from './Contact/Contact';
 import { ContactsList } from './ContactList.styled';
 import { useSelector } from 'react-redux';
-import { selectFilter } from 'redux/selectors';
+import { selectFilter, selectToken } from 'redux/selectors';
 import { useGetAllContactsQuery } from 'redux/contactsApi';
 import { errorToast } from 'helpers/toasts';
 import { DotWave } from '@uiball/loaders';
@@ -15,7 +15,8 @@ const filterContacts = (contacts, filter) => {
 };
 
 export const ContactList = () => {
-  const { data: contacts, isLoading, error } = useGetAllContactsQuery();
+  const token = useSelector(selectToken);
+  const { data: contacts, isLoading, error } = useGetAllContactsQuery(token);
 
   const filter = useSelector(selectFilter);
   const filteredContacts = contacts && filterContacts(contacts, filter);

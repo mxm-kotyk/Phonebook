@@ -12,16 +12,19 @@ import sprite from '../../../img/sprite.svg';
 import { useDeleteContactMutation } from 'redux/contactsApi';
 import { Ring } from '@uiball/loaders';
 import { errorToast, successDeleteToast } from 'helpers/toasts';
+import { useSelector } from 'react-redux';
+import { selectToken } from 'redux/selectors';
 
 const callIcon = `${sprite}#icon-phone`;
 const deleteIcon = `${sprite}#icon-delete`;
 
 export const Contact = ({ id, name, number }) => {
+  const token = useSelector(selectToken);
   const normalizedNumberLink = `tel:${number.replace(/[^\d+]/g, '')}`;
   const [deleteContact, { error, isLoading }] = useDeleteContactMutation();
 
   const handleDelete = async id => {
-    await deleteContact(id);
+    await deleteContact({ id, token });
 
     if (error) {
       errorToast(error);

@@ -7,7 +7,9 @@ import {
   StyledForm,
 } from 'components/ContactForm/ContactForm.styled';
 import { useFormik } from 'formik';
+import { fn } from 'helpers/axios';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useLogInUserMutation } from 'redux/authApi';
 import { setToken } from 'redux/tokenSlice';
 import uniqid from 'uniqid';
@@ -31,6 +33,7 @@ const LogInPage = () => {
     validationSchema,
   });
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logInUser, { error }] = useLogInUserMutation();
 
@@ -41,8 +44,8 @@ const LogInPage = () => {
     formik.resetForm();
     try {
       const user = await logInUser({ email, password }).unwrap();
-      console.log(user.token);
       dispatch(setToken(user.token));
+      navigate('/contacts');
     } catch (error) {
       console.log(error);
     }

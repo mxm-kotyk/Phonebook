@@ -16,6 +16,8 @@ import {
   useGetAllContactsQuery,
 } from 'redux/contactsApi';
 import { errorToast, successAddToast, warningToast } from 'helpers/toasts';
+import { useSelector } from 'react-redux';
+import { selectToken } from 'redux/selectors';
 
 const validationSchema = yup.object({
   name: yup
@@ -35,8 +37,9 @@ const validationSchema = yup.object({
 });
 
 export const ContactForm = () => {
+  const token = useSelector(selectToken);
   const [addContact, { error, isLoading }] = useAddContactMutation();
-  const { data: contacts } = useGetAllContactsQuery();
+  const { data: contacts } = useGetAllContactsQuery(token);
 
   const formik = useFormik({
     initialValues: { name: '', number: '' },
@@ -53,7 +56,7 @@ export const ContactForm = () => {
     }
 
     const contactData = { name, number };
-    await addContact(contactData);
+    await addContact({ contactData, token });
 
     if (error) {
       errorToast(error);

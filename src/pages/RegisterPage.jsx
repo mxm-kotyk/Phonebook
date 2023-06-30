@@ -7,7 +7,10 @@ import {
   StyledForm,
 } from 'components/ContactForm/ContactForm.styled';
 import { useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from 'redux/authApi';
+import { setToken } from 'redux/tokenSlice';
 import uniqid from 'uniqid';
 import * as yup from 'yup';
 
@@ -36,7 +39,8 @@ const RegisterPage = () => {
       handleSubmit(name, email, password),
     validationSchema,
   });
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [registerUser, { error }] = useRegisterUserMutation();
 
   const nameInputId = uniqid();
@@ -46,9 +50,13 @@ const RegisterPage = () => {
   const handleSubmit = async (name, email, password) => {
     formik.resetForm();
     console.log({ name, email, password });
-
-    await registerUser({ name, email, password }).unwrap();
-    console.log(error);
+    try {
+      const data = await registerUser({ name, email, password }).unwrap();
+      dispatch(setToken(data.token));
+      navigate('/contacts');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
