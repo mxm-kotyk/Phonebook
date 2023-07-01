@@ -24,12 +24,10 @@ export const ContactList = () => {
 
   const filter = useSelector(selectFilter);
   const filteredContacts = contacts && filterContacts(contacts, filter);
-
   const loadingIndicator = isLoading && (
     <DotWave size={100} speed={1} color="#204154" />
   );
-
-  const showError = error && errorToast(error);
+  const showError = error && errorToast(error.error);
 
   return (
     <div>

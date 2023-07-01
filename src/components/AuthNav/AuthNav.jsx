@@ -1,10 +1,10 @@
-import { NavLink } from 'react-router-dom';
+import { StyledNavLink } from 'components/shared-styles/nav-link.styled';
 
 function AuthNav() {
   return (
     <div style={{ display: 'flex', gap: '20px' }}>
-      <NavLink to="/register">Register</NavLink>
-      <NavLink to="/login">LogIn</NavLink>
+      <StyledNavLink to="/register">Register</StyledNavLink>
+      <StyledNavLink to="/login">LogIn</StyledNavLink>
     </div>
   );
 }

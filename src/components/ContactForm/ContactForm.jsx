@@ -1,6 +1,4 @@
 import { useFormik } from 'formik';
-import * as yup from 'yup';
-import PropTypes from 'prop-types';
 import uniqid from 'uniqid';
 import { Ring } from '@uiball/loaders';
 import {
@@ -10,7 +8,7 @@ import {
   Label,
   ErrorText,
   AddButton,
-} from './ContactForm.styled';
+} from 'components/shared-styles/form.styled';
 import {
   useAddContactMutation,
   useGetAllContactsQuery,
@@ -18,33 +16,17 @@ import {
 import { errorToast, successAddToast, warningToast } from 'helpers/toasts';
 import { useSelector } from 'react-redux';
 import { selectToken } from 'redux/selectors';
-
-const validationSchema = yup.object({
-  name: yup
-    .string()
-    .required('Name is required')
-    .matches(
-      /^[\p{L} '-]+$/u,
-      'Name may contain only letters, apostrophe, dash and spaces.'
-    ),
-  number: yup
-    .string()
-    .required('Number is required')
-    .matches(
-      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
-      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +.'
-    ),
-});
+import { contactValidationSchema } from 'helpers/form-validation-schemas';
 
 export const ContactForm = () => {
   const token = useSelector(selectToken);
-  const [addContact, { error, isLoading }] = useAddContactMutation();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const { data: contacts } = useGetAllContactsQuery(token);
 
   const formik = useFormik({
     initialValues: { name: '', number: '' },
     onSubmit: ({ name, number }) => handleSubmit(name, number),
-    validationSchema,
+    validationSchema: contactValidationSchema,
   });
 
   const handleSubmit = async (name, number) => {
@@ -54,16 +36,12 @@ export const ContactForm = () => {
       warningToast(name);
       return;
     }
-
-    const contactData = { name, number };
-    await addContact({ contactData, token });
-
-    if (error) {
-      errorToast(error);
-    }
-
-    if (!error) {
+    try {
+      const contactData = { name, number };
+      await addContact({ contactData, token }).unwrap();
       successAddToast(name);
+    } catch (error) {
+      errorToast(error.error);
     }
   };
 
@@ -116,14 +94,4 @@ export const ContactForm = () => {
       </StyledForm>
     </div>
   );
-};
-
-ContactForm.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
 };

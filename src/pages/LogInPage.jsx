@@ -1,3 +1,5 @@
+import { Ring } from '@uiball/loaders';
+import { Container } from 'components/shared-styles/container';
 import {
   AddButton,
   ErrorText,
@@ -5,55 +7,46 @@ import {
   Label,
   StyledField,
   StyledForm,
-} from 'components/ContactForm/ContactForm.styled';
+} from 'components/shared-styles/form.styled';
+import { LinkButton } from 'components/shared-styles/link-button.styled';
+import { RedirectWrapper } from 'components/shared-styles/redirect-block.styled';
 import { useFormik } from 'formik';
+import { logInValidationSchema } from 'helpers/form-validation-schemas';
+import { errorToast } from 'helpers/toasts';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useLogInUserMutation } from 'redux/authApi';
 import { setToken } from 'redux/tokenSlice';
 import uniqid from 'uniqid';
-import * as yup from 'yup';
-
-const validationSchema = yup.object({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(8, 'Password must be 8 characters or more')
-    .required('Password is required'),
-});
 
 const LogInPage = () => {
   const formik = useFormik({
     initialValues: { email: '', password: '' },
     onSubmit: ({ email, password }) => handleSubmit(email, password),
-    validationSchema,
+    validationSchema: logInValidationSchema,
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [logInUser, { error }] = useLogInUserMutation();
+  const [logInUser, { isLoading }] = useLogInUserMutation();
 
   const emailInputId = uniqid();
   const passwordInputId = uniqid();
 
   const handleSubmit = async (email, password) => {
     formik.resetForm();
-    // try {
-    const user = await logInUser({ email, password }).unwrap();
-    dispatch(setToken(user.token));
-    navigate('/contacts');
-    if (error) console.log(error);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const user = await logInUser({ email, password }).unwrap();
+      dispatch(setToken(user.token));
+      navigate('/contacts');
+    } catch (error) {
+      errorToast(error.error);
+    }
   };
 
   return (
-    <>
-      <h2>LogIn Page</h2>
+    <Container>
+      <h1>LogIn</h1>
       <StyledForm onSubmit={formik.handleSubmit}>
         <FieldWrapper>
           <StyledField
@@ -89,9 +82,21 @@ const LogInPage = () => {
             <ErrorText>{formik.errors.password}</ErrorText>
           )}
         </FieldWrapper>
-        <AddButton type="submit">LogIn</AddButton>
+        <AddButton type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <Ring size={40} lineWeight={5} speed={2} color="white" />
+          ) : (
+            'LogIn'
+          )}
+        </AddButton>
       </StyledForm>
-    </>
+      <RedirectWrapper>
+        <p>Don't have an account yet?</p>
+        <LinkButton type="button" onClick={() => navigate('/register')}>
+          Create one here
+        </LinkButton>
+      </RedirectWrapper>
+    </Container>
   );
 };
 

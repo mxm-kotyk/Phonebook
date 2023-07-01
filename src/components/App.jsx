@@ -1,4 +1,3 @@
-import { Wrapper } from './App.styled';
 import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -7,14 +6,14 @@ import { PrivateRoute } from './Routes/PrivateRoute';
 import { RestrictedRoute } from './Routes/RestrictedRoute';
 import { lazy } from 'react';
 
-const HomePage = lazy(() => import('pages/HomePage'));
+const HomePage = lazy(() => import('pages/HomePage/HomePage'));
 const ContactsPage = lazy(() => import('pages/ContactsPage'));
 const RegisterPage = lazy(() => import('pages/RegisterPage'));
 const LogInPage = lazy(() => import('pages/LogInPage'));
 
 export const App = () => {
   return (
-    <Wrapper>
+    <>
       <Helmet>
         <title>Phonebook</title>
       </Helmet>
@@ -42,6 +41,6 @@ export const App = () => {
         </Route>
       </Routes>
       <Toaster />
-    </Wrapper>
+    </>
   );
 };

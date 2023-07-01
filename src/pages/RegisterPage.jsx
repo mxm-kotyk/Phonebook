@@ -1,3 +1,5 @@
+import { Ring } from '@uiball/loaders';
+import { Container } from 'components/shared-styles/container';
 import {
   AddButton,
   ErrorText,
@@ -5,43 +7,27 @@ import {
   Label,
   StyledField,
   StyledForm,
-} from 'components/ContactForm/ContactForm.styled';
+} from 'components/shared-styles/form.styled';
+import { LinkButton } from 'components/shared-styles/link-button.styled';
+import { RedirectWrapper } from 'components/shared-styles/redirect-block.styled';
 import { useFormik } from 'formik';
+import { registrationValidationSchema } from 'helpers/form-validation-schemas';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from 'redux/authApi';
 import { setToken } from 'redux/tokenSlice';
 import uniqid from 'uniqid';
-import * as yup from 'yup';
-
-const validationSchema = yup.object({
-  name: yup
-    .string()
-    .required('Name is required')
-    .matches(
-      /^[\p{L} '-]+$/u,
-      'Name may contain only letters, apostrophe, dash and spaces.'
-    ),
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(8, 'Password must be 8 characters or more')
-    .required('Password is required'),
-});
 
 const RegisterPage = () => {
   const formik = useFormik({
     initialValues: { name: '', email: '', password: '' },
     onSubmit: ({ name, email, password }) =>
       handleSubmit(name, email, password),
-    validationSchema,
+    validationSchema: registrationValidationSchema,
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [registerUser, { error }] = useRegisterUserMutation();
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   const nameInputId = uniqid();
   const emailInputId = uniqid();
@@ -50,20 +36,18 @@ const RegisterPage = () => {
   const handleSubmit = async (name, email, password) => {
     formik.resetForm();
     console.log({ name, email, password });
-    // try {
-    const data = await registerUser({ name, email, password }).unwrap();
-    dispatch(setToken(data.token));
-    navigate('/contacts');
-
-    if (error) console.log(error);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const data = await registerUser({ name, email, password }).unwrap();
+      dispatch(setToken(data.token));
+      navigate('/contacts');
+    } catch (error) {
+      console.log(error.error);
+    }
   };
 
   return (
-    <>
-      <h2>Register Page</h2>
+    <Container>
+      <h1>Register</h1>
       <StyledForm onSubmit={formik.handleSubmit}>
         <FieldWrapper>
           <StyledField
@@ -116,9 +100,21 @@ const RegisterPage = () => {
             <ErrorText>{formik.errors.password}</ErrorText>
           )}
         </FieldWrapper>
-        <AddButton type="submit">Register</AddButton>
+        <AddButton type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <Ring size={40} lineWeight={5} speed={2} color="white" />
+          ) : (
+            'Register'
+          )}
+        </AddButton>
       </StyledForm>
-    </>
+      <RedirectWrapper>
+        <p>Already registered?</p>
+        <LinkButton type="button" onClick={() => navigate('/login')}>
+          LogIn
+        </LinkButton>
+      </RedirectWrapper>
+    </Container>
   );
 };
 

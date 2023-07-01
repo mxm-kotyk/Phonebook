@@ -5,7 +5,6 @@ const tokenSlice = createSlice({
   initialState: { token: null },
   reducers: {
     setToken(state, { payload }) {
-      // return payload;
       state.token = payload;
     },
   },

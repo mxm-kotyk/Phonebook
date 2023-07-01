@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import { selectToken } from 'redux/selectors';
+import { Nav } from './Navigation.styled';
+import { StyledNavLink } from 'components/shared-styles/nav-link.styled';
 
 export const Navigation = () => {
   const token = useSelector(selectToken);
 
   return (
-    <nav style={{ display: 'flex', gap: '20px' }}>
-      <NavLink to="/">Home</NavLink>
-      {token && <NavLink to="/contacts">Contacts</NavLink>}
-    </nav>
+    <Nav>
+      <StyledNavLink to="/">Home</StyledNavLink>
+      {token && <StyledNavLink to="/contacts">Contacts</StyledNavLink>}
+    </Nav>
   );
 };

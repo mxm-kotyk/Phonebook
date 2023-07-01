@@ -1,10 +1,5 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-  width: fit-content;
-  margin: 20px auto;
-`;
-
 export const MainTitle = styled.h1`
   margin-bottom: 40px;
   font-weight: 600;
