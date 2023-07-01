@@ -50,13 +50,15 @@ const RegisterPage = () => {
   const handleSubmit = async (name, email, password) => {
     formik.resetForm();
     console.log({ name, email, password });
-    try {
-      const data = await registerUser({ name, email, password }).unwrap();
-      dispatch(setToken(data.token));
-      navigate('/contacts');
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    const data = await registerUser({ name, email, password }).unwrap();
+    dispatch(setToken(data.token));
+    navigate('/contacts');
+
+    if (error) console.log(error);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (

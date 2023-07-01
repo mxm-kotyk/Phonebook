@@ -1,18 +1,35 @@
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useGetUserQuery } from 'redux/authApi';
+import { selectToken } from 'redux/selectors';
 
 function HomePage() {
   const navigate = useNavigate();
-  return (
-    <>
-      <h1>Welcome to Phonebook</h1>
-      <button type="button" onClick={() => navigate('/login')}>
-        LogIn
-      </button>
-      <button type="button" onClick={() => navigate('/register')}>
-        Register
-      </button>
-    </>
-  );
+  const token = useSelector(selectToken);
+  const { data } = useGetUserQuery(token);
+
+  if (token) {
+    return (
+      <>
+        <h1>Welcome to your Phonebook, {data && data.name}</h1>
+      </>
+    );
+  }
+
+  if (!token) {
+    return (
+      <>
+        <h1>Welcome to Phonebook</h1>
+        <p>
+          Please
+          <button type="button" onClick={() => navigate('/login')}>
+            LogIn
+          </button>
+          to continue
+        </p>
+      </>
+    );
+  }
 }
 
 export default HomePage;

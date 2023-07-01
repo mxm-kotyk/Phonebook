@@ -16,7 +16,11 @@ const filterContacts = (contacts, filter) => {
 
 export const ContactList = () => {
   const token = useSelector(selectToken);
-  const { data: contacts, isLoading, error } = useGetAllContactsQuery(token);
+  const {
+    data: contacts,
+    isLoading,
+    error,
+  } = useGetAllContactsQuery(token, { skip: token === null });
 
   const filter = useSelector(selectFilter);
   const filteredContacts = contacts && filterContacts(contacts, filter);

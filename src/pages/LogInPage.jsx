@@ -41,13 +41,14 @@ const LogInPage = () => {
 
   const handleSubmit = async (email, password) => {
     formik.resetForm();
-    try {
-      const user = await logInUser({ email, password }).unwrap();
-      dispatch(setToken(user.token));
-      navigate('/contacts');
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    const user = await logInUser({ email, password }).unwrap();
+    dispatch(setToken(user.token));
+    navigate('/contacts');
+    if (error) console.log(error);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (

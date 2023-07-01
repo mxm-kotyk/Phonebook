@@ -8,7 +8,7 @@ export const AppBar = () => {
   const token = useSelector(selectToken);
 
   return (
-    <header style={{ display: 'flex' }}>
+    <header style={{ display: 'flex', gap: '10px' }}>
       <Navigation />
       {token ? <UserMenu /> : <AuthNav />}
     </header>
