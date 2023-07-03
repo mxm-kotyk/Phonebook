@@ -39,7 +39,9 @@ const RegisterPage = () => {
     try {
       const data = await registerUser({ name, email, password }).unwrap();
       dispatch(setToken(data.token));
-      navigate('/contacts');
+      setTimeout(() => {
+        navigate('/contacts');
+      }, 0);
     } catch (error) {
       console.log(error.error);
     }

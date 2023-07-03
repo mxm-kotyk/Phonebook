@@ -32,10 +32,22 @@ export const ContactForm = () => {
   const handleSubmit = async (name, number) => {
     formik.resetForm();
 
-    if (contacts.some(contact => contact.name.includes(name))) {
+    if (
+      contacts.some(contact =>
+        contact.name.toLowerCase().includes(name.toLowerCase())
+      )
+    ) {
       warningToast(name);
       return;
     }
+    if (contacts.some(contact => contact.number === number)) {
+      const originalName = contacts.find(
+        contact => contact.number === number
+      ).name;
+      warningToast(originalName, number);
+      return;
+    }
+
     try {
       const contactData = { name, number };
       await addContact({ contactData, token }).unwrap();

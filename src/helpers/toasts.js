@@ -60,6 +60,13 @@ export const successDeleteToast = name => {
   toast.success(`Contact '${name}' deleted`, successToastParams);
 };
 
-export const warningToast = name => {
+export const warningToast = (name, number) => {
+  if (number !== undefined) {
+    toast.error(
+      `Contact with such number already exists under name '${name}'`,
+      warningToastParms
+    );
+    return;
+  }
   toast.error(`'${name}' is already in contacts`, warningToastParms);
 };

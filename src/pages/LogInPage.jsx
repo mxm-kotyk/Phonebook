@@ -38,7 +38,9 @@ const LogInPage = () => {
     try {
       const user = await logInUser({ email, password }).unwrap();
       dispatch(setToken(user.token));
-      navigate('/contacts');
+      setTimeout(() => {
+        navigate('/contacts');
+      }, 0);
     } catch (error) {
       errorToast(error.error);
     }
