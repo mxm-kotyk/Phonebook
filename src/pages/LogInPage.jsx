@@ -42,6 +42,10 @@ const LogInPage = () => {
         navigate('/contacts');
       }, 0);
     } catch (error) {
+      if (error.status === 400) {
+        errorToast('Wrong email or password');
+        return;
+      }
       errorToast(error.error);
     }
   };

@@ -12,6 +12,7 @@ import { LinkButton } from 'components/shared-styles/link-button.styled';
 import { RedirectWrapper } from 'components/shared-styles/redirect-block.styled';
 import { useFormik } from 'formik';
 import { registrationValidationSchema } from 'helpers/form-validation-schemas';
+import { errorToast } from 'helpers/toasts';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from 'redux/authApi';
@@ -35,7 +36,6 @@ const RegisterPage = () => {
 
   const handleSubmit = async (name, email, password) => {
     formik.resetForm();
-    console.log({ name, email, password });
     try {
       const data = await registerUser({ name, email, password }).unwrap();
       dispatch(setToken(data.token));
@@ -43,7 +43,11 @@ const RegisterPage = () => {
         navigate('/contacts');
       }, 0);
     } catch (error) {
-      console.log(error.error);
+      if (error.status === 400) {
+        errorToast('Wrong email or password');
+        return;
+      }
+      errorToast(error.error);
     }
   };
 
